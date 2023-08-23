@@ -10,7 +10,7 @@ class Category(models.Model):
     name = models.CharField(choices=category_choices, unique=True, max_length=50)
 
     def __str__(self):
-        return f"{self.name} category"
+        return f"{self.name.capitalize()}"
 
 class Listing(models.Model):
     title = models.CharField(max_length=80)

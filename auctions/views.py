@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing, Category
 from .forms import ListingForm
 
 
@@ -65,7 +65,23 @@ def register(request):
     
 
 def create(request):
+    if request.method == "POST":
+        title = request.POST["title"]
+        description = request.POST["description"]
+        starting_bid = request.POST["starting_bid"]
+        category = Category.objects.get(name = "fashion")
+        imageUrl = request.POST["imageUrl"]
+        user = request.user
+
+        l = Listing(title=title, description=description, starting_bid=starting_bid, category=category, imageUrl=imageUrl, user=user)
+        l.save()
+
+        return HttpResponseRedirect(reverse("active"))
     listing_form = ListingForm()
     return render(request, "auctions/create.html", {
         "form": listing_form
     })
+
+
+def active(request):
+    return HttpResponse("this is the active listings page")

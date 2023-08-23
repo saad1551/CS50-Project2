@@ -2,15 +2,15 @@
 
 {% block body %}
     <form action="{% url 'create' %}" method="post">
+        {% csrf_token %}
         <label for="title">Title:</label>
         {{ form.title }}
         <label for="description">Description:</label>
         {{ form.description }}
         <label for="starting_bid">Starting Bid:</label>
         {{ form.starting_bid }}
-        <label for="category">Category:</label>
-        <select name="category" id="category">Category</select>
-        
+        <label for="category">category:</label>
+        {{ form.category }}
         <label for="imageUrl">Image URL:</label>
         {{ form.imageUrl }}
         <input type="submit" value="Create Listing">
