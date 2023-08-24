@@ -9,7 +9,9 @@ from .forms import ListingForm
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+    })
 
 
 def login_view(request):
@@ -69,19 +71,16 @@ def create(request):
         title = request.POST["title"]
         description = request.POST["description"]
         starting_bid = request.POST["starting_bid"]
-        category = Category.objects.get(name = "fashion")
+        category = Category.objects.get(id=request.POST["category"])
         imageUrl = request.POST["imageUrl"]
         user = request.user
 
         l = Listing(title=title, description=description, starting_bid=starting_bid, category=category, imageUrl=imageUrl, user=user)
         l.save()
 
-        return HttpResponseRedirect(reverse("active"))
+        return HttpResponseRedirect(reverse("index"))
     listing_form = ListingForm()
     return render(request, "auctions/create.html", {
         "form": listing_form
     })
 
-
-def active(request):
-    return HttpResponse("this is the active listings page")

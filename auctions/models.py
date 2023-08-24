@@ -17,7 +17,7 @@ class Listing(models.Model):
     description = models.TextField()
     starting_bid = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
-    imageUrl = models.URLField(blank=True)
+    imageUrl = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listings", blank=True)
 
     def __str__(self):
