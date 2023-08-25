@@ -16,12 +16,14 @@ class Listing(models.Model):
     title = models.CharField(max_length=80)
     description = models.TextField()
     starting_bid = models.FloatField()
+    current_price = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     imageUrl = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listings", blank=True)
 
     def __str__(self):
         return f"title: {self.title}\nstarting_bid={self.starting_bid}\ncategory:{self.category}"
+
 
 class Bid(models.Model):
     listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")

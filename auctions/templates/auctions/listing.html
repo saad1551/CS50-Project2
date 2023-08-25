@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} 
+    Listing
+{% endblock %}
+
+{% block body %}
+    <div class="listing">
+        <div class="listing__container">
+            <div class="listing__containerLeft">
+                <img src="{{ listing.imageUrl }}" alt="">
+                <p>Listed by {{ listing.user.username }}</p>
+            </div>
+            <div class="listing__containerRight">
+                <div class="listing__containerRightDetails">
+                    <h2>{{ listing.title }}</h2>
+                    <h4>{{ listing.description }}</h4>
+                </div>
+                <div class="listing__containerRightBidding">
+                    <p>Current Price: ${{ price }}</p>
+                    {% if user.is_authenticated %}
+                    <div class="listing__bid">
+                        <form action="{% url 'listing' listing.id %}" method="post">
+                            {% csrf_token %}
+                            <input required min="{{ min_bid }}" name="bid_amount" type="number" placeholder="Bid Amount">
+                            <input type="submit" value="Make a Bid">
+                        </form>
+                    </div>
+                    {% else %}
+                    <p>Sign in to make a bid</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="listing__comments">
+        </div>
+    </div>
+{% endblock %}

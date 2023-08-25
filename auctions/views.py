@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Bid
 from .forms import ListingForm
 
 
@@ -75,7 +75,7 @@ def create(request):
         imageUrl = request.POST["imageUrl"]
         user = request.user
 
-        l = Listing(title=title, description=description, starting_bid=starting_bid, category=category, imageUrl=imageUrl, user=user)
+        l = Listing(title=title, description=description, starting_bid=starting_bid, current_price=starting_bid, category=category, imageUrl=imageUrl, user=user)
         l.save()
 
         return HttpResponseRedirect(reverse("index"))
@@ -84,3 +84,29 @@ def create(request):
         "form": listing_form
     })
 
+
+def listing(request, id):
+    listing = Listing.objects.get(id=id)
+    listing_bids = listing.bids.all()
+    if request.method == "POST":
+        if request.POST["bid_amount"]:
+            created_bid = Bid(listing_id = listing, bid_amount=float(request.POST["bid_amount"]), user=request.user)
+            if listing_bids:
+                if all(listing_bid.bid_amount < created_bid.bid_amount for listing_bid in listing_bids):
+                    created_bid.save()
+                    listing.current_price = created_bid.bid_amount
+                    listing.save()
+            else:
+                if created_bid.bid_amount >= listing.starting_bid:
+                    created_bid.save()
+                    listing.current_price = created_bid.bid_amount
+                    listing.save()
+
+
+        return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
+
+    return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
+        "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid
+    })
