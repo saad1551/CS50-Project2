@@ -12,7 +12,7 @@
                 <div class="active__listingRight">
                     <h3>{{ listing.title }}</h3>
                     <p>{{ listing.description }}</p>
-                    <small>Current Price: ${{ listing.starting_bid }}</small>
+                    <small>Current Price: ${{ listing.current_price }}</small>
                 </div>
             </div>
             <a href="{% url 'listing' listing.id %}">View Listing</a>

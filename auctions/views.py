@@ -75,7 +75,7 @@ def create(request):
         imageUrl = request.POST["imageUrl"]
         user = request.user
 
-        l = Listing(title=title, description=description, starting_bid=starting_bid, category=category, imageUrl=imageUrl, user=user)
+        l = Listing(title=title, description=description, starting_bid=starting_bid, current_price=starting_bid, category=category, imageUrl=imageUrl, user=user)
         l.save()
 
         return HttpResponseRedirect(reverse("index"))
@@ -94,9 +94,15 @@ def listing(request, id):
             if listing_bids:
                 if all(listing_bid.bid_amount < created_bid.bid_amount for listing_bid in listing_bids):
                     created_bid.save()
+                    listing.current_price = created_bid.bid_amount
+                    listing.save()
             else:
                 if created_bid.bid_amount >= listing.starting_bid:
                     created_bid.save()
+                    listing.current_price = created_bid.bid_amount
+                    listing.save()
+
+
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
 
     return render(request, "auctions/listing.html", {
