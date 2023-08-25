@@ -102,11 +102,15 @@ def listing(request, id):
                     listing.current_price = created_bid.bid_amount
                     listing.save()
 
+        elif request.POST["delete"]:
+            listing.delete()
+
 
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
-        "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid
+        "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
+        "delete_listing": bool(request.user == listing.user)
     })

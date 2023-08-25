@@ -18,7 +18,12 @@
                 </div>
                 <div class="listing__containerRightBidding">
                     <p>Current Price: ${{ price }}</p>
-                    {% if user.is_authenticated %}
+                    {% if delete_listing %}
+                        <form action="{% url 'listing' listing.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" name="delete" value="Delete Listing">
+                        </form>
+                    {% elif user.is_authenticated %}
                     <div class="listing__bid">
                         <form action="{% url 'listing' listing.id %}" method="post">
                             {% csrf_token %}
