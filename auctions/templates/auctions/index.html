@@ -14,6 +14,7 @@
                     <p>{{ listing.description }}</p>
                     <small>Current Price: ${{ listing.starting_bid }}</small>
                 </div>
+                <a href="{% url 'listing' listing.id %}">View Listing</a>
             </div>
         {% endfor %} 
     </div>
