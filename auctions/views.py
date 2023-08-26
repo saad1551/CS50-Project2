@@ -89,7 +89,7 @@ def listing(request, id):
     listing = Listing.objects.get(id=id)
     listing_bids = listing.bids.all()
     if request.method == "POST":
-        if request.POST["bid_amount"]:
+        if request.POST.get("bid_amount"):
             created_bid = Bid(listing_id = listing, bid_amount=float(request.POST["bid_amount"]), user=request.user)
             if listing_bids:
                 if all(listing_bid.bid_amount < created_bid.bid_amount for listing_bid in listing_bids):
@@ -102,8 +102,9 @@ def listing(request, id):
                     listing.current_price = created_bid.bid_amount
                     listing.save()
 
-        elif request.POST["delete"]:
+        elif request.POST.get("delete") and listing.user == request.user:
             listing.delete()
+            return HttpResponseRedirect(reverse("index"))
 
 
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
