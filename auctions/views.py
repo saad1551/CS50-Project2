@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib import messages
 
 from .models import User, Listing, Category, Bid
 from .forms import ListingForm
@@ -96,11 +97,19 @@ def listing(request, id):
                     created_bid.save()
                     listing.current_price = created_bid.bid_amount
                     listing.save()
+                    messages.info(request, "Bid made successfully!")
+                else:
+                    messages.info(request, "Something went wrong while making the bid")
             else:
                 if created_bid.bid_amount >= listing.starting_bid:
                     created_bid.save()
                     listing.current_price = created_bid.bid_amount
                     listing.save()
+                    messages.info(request, "Bid made successfully!")
+                else:
+                    messages.info(request, "Something went wrong while making the bid")
+
+
 
         elif request.POST.get("delete") and listing.user == request.user:
             listing.delete()

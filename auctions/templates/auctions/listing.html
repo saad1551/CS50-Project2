@@ -6,6 +6,11 @@
 
 {% block body %}
     <div class="listing">
+        {% for message in messages %}
+        <div class="message">
+            <h4>{{ message }}</h4>
+        </div>
+        {% endfor %}
         <div class="listing__container">
             <div class="listing__containerLeft">
                 <img src="{{ listing.imageUrl }}" alt="">
