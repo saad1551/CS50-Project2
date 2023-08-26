@@ -11,6 +11,12 @@ class Category(models.Model):
 
     def __str__(self):
         return f"{self.name.capitalize()}"
+    
+class WatchList(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="watch_list")
+
+    def __str__(self):
+        return f"{self.user.username}'s watchlist"
 
 class Listing(models.Model):
     title = models.CharField(max_length=80)
@@ -22,6 +28,7 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listings", blank=True)
     is_closed = models.BooleanField(default=False)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="won_auctions") 
+    watch_lists = models.ManyToManyField(WatchList, related_name="listings")
 
     def __str__(self):
         return f"title: {self.title}\nstarting_bid={self.starting_bid}\ncategory:{self.category}"
@@ -42,3 +49,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username}\n{self.comment}"
+
+
+

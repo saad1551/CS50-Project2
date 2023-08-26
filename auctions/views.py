@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 
-from .models import User, Listing, Category, Bid, Comment
+from .models import User, Listing, Category, Bid, Comment, WatchList
 from .forms import ListingForm, CommentForm
 
 
@@ -122,6 +122,13 @@ def listing(request, id):
             listing_comment = Comment(listing_id = listing, comment = request.POST["comment"], user=request.user)
             listing_comment.save()
 
+        elif request.POST.get("add_to_watchlist"):
+            watchlist = WatchList.objects.get_or_create(user=request.user)[0]
+            watchlist.listings.add(listing)
+
+        elif request.POST.get("remove_from_watchlist"):
+            watchlist = WatchList.objects.get(user=request.user)
+            watchlist.listings.remove(listing)
 
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
 
@@ -129,7 +136,9 @@ def listing(request, id):
         "listing": listing,
         "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
         "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
-        "close_auction": bool(request.user == listing.user),
+        "close_auction": bool(request.user == listing.user and bool(listing_bids)),
         "won_auction": bool(listing.winner == request.user),
-        "comments": listing.comments.all()
+        "comments": listing.comments.all(),
+        "add_to_watchlist": bool(listing.user != request.user and not listing.is_closed),
+        "remove_from_watchlist": bool(request.user.is_authenticated and request.user != listing.user and listing in request.user.watch_list.listings.all())
     })

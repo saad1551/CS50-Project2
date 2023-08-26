@@ -23,13 +23,24 @@
                 </div>
                 <div class="listing__containerRightBidding">
                     <p>Current Price: ${{ price }}</p>
+                    {% if remove_from_watchlist %} 
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" name="remove_from_watchlist" value="Remove From Watchlist">
+                    </form>
+                    {% elif add_to_watchlist and user.is_authenticated %}
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" name="add_to_watchlist" value="Add To Watchlist">
+                    </form>
+                    {% endif %} 
                     {% if not listing.is_closed %}
                     {% if close_auction %}
                         <form action="{% url 'listing' listing.id %}" method="post">
                             {% csrf_token %}
                             <input type="submit" name="close" value="Close Auction">
                         </form>
-                    {% elif user.is_authenticated %}
+                    {% elif user.is_authenticated and user != listing.user %}
                     <div class="listing__bid">
                         <form action="{% url 'listing' listing.id %}" method="post">
                             {% csrf_token %}
@@ -37,7 +48,7 @@
                             <input type="submit" value="Make a Bid">
                         </form>
                     </div>
-                    {% else %}
+                    {% elif not user.is_authenticated %}
                     <p>Sign in to make a bid</p>
                     {% endif %}
                     {% elif won_auction %}
