@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 
-from .models import User, Listing, Category, Bid
-from .forms import ListingForm
+from .models import User, Listing, Category, Bid, Comment
+from .forms import ListingForm, CommentForm
 
 
 def index(request):
@@ -117,6 +117,10 @@ def listing(request, id):
             listing.winner = highest_bid.user
             listing.save()
             return HttpResponseRedirect(reverse("index"))
+        
+        elif request.POST.get("comment"):
+            listing_comment = Comment(listing_id = listing, comment = request.POST["comment"], user=request.user)
+            listing_comment.save()
 
 
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
@@ -126,5 +130,6 @@ def listing(request, id):
         "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
         "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
         "close_auction": bool(request.user == listing.user),
-        "won_auction": bool(listing.winner == request.user)
+        "won_auction": bool(listing.winner == request.user),
+        "comments": listing.comments.all()
     })

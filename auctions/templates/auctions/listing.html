@@ -47,10 +47,25 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
 
+        </div>
 
         <div class="listing__comments">
+            {% for comment in comments %}
+            <div class="listing__comment">
+                <p><strong>{{comment.user.username}} </strong>{{comment.comment}}</p>
+            </div>
+            {% endfor %}
+            {% if user.is_authenticated %}
+            <div class="listing__commentBox">
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="comment" placeholder="Add a comment...">
+                    <input type="submit" name="addComment">
+                </form>
+            </div>
+            {% endif %}
         </div>
+
     </div>
 {% endblock %}
