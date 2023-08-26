@@ -111,8 +111,11 @@ def listing(request, id):
 
 
 
-        elif request.POST.get("delete") and listing.user == request.user:
-            listing.delete()
+        elif request.POST.get("close") and listing.user == request.user:
+            listing.is_closed = True
+            highest_bid = max(listing_bids, key=lambda x: x.bid_amount)
+            listing.winner = highest_bid.user
+            listing.save()
             return HttpResponseRedirect(reverse("index"))
 
 
@@ -122,5 +125,6 @@ def listing(request, id):
         "listing": listing,
         "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
         "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
-        "delete_listing": bool(request.user == listing.user)
+        "close_auction": bool(request.user == listing.user),
+        "won_auction": bool(listing.winner == request.user)
     })

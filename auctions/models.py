@@ -20,6 +20,8 @@ class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     imageUrl = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listings", blank=True)
+    is_closed = models.BooleanField(default=False)
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="won_auctions") 
 
     def __str__(self):
         return f"title: {self.title}\nstarting_bid={self.starting_bid}\ncategory:{self.category}"

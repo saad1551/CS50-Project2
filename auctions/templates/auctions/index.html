@@ -3,6 +3,7 @@
 
 <div class="active__listingsContainer">
   {% for listing in listings %}
+  {% if not listing.is_closed %}
   <div class="active__listing">
     <div class="active__listingLeft">
       <img class="active__listingImage" src="{{ listing.imageUrl }}" alt="" />
@@ -14,6 +15,7 @@
     </div>
   </div>
   <a href="{% url 'listing' listing.id %}">View Listing</a>
+  {% endif %}
   {% endfor %}
 </div>
 
