@@ -142,3 +142,10 @@ def listing(request, id):
         "add_to_watchlist": bool(listing.user != request.user and not listing.is_closed),
         "remove_from_watchlist": bool(request.user.is_authenticated and request.user != listing.user and listing in request.user.watch_list.listings.all())
     })
+
+
+def watch(request):
+    watchlist = request.user.watch_list.listings.all()
+    return render(request, "auctions/watch.html", {
+        "watchlist": watchlist
+    })
