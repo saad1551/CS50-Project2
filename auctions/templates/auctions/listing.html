@@ -22,7 +22,11 @@
                     <h4>{{ listing.description }}</h4>
                 </div>
                 <div class="listing__containerRightBidding">
-                    <p>Current Price: ${{ price }}</p>
+                    {% if listing.is_closed %}
+                    <p>Sold for: ${{ listing.current_price }}</p>
+                    {% else %}
+                    <p>Current Price: ${{ listing.current_price }}</p>
+                    {% endif %}
                     {% if remove_from_watchlist %} 
                     <form action="{% url 'listing' listing.id %}" method="post">
                         {% csrf_token %}

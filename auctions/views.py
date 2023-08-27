@@ -11,7 +11,7 @@ from .forms import ListingForm, CommentForm
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.all().filter(is_closed = False)
     })
 
 
@@ -134,7 +134,6 @@ def listing(request, id):
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "price": max(listing_bids, key=lambda x: x.bid_amount).bid_amount if bool(listing_bids) else listing.starting_bid,
         "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
         "close_auction": bool(request.user == listing.user and bool(listing_bids)),
         "won_auction": bool(listing.winner == request.user),
@@ -146,8 +145,8 @@ def listing(request, id):
 
 def watch(request):
     watchlist = request.user.watch_list.listings.all()
-    return render(request, "auctions/watch.html", {
-        "watchlist": watchlist
+    return render(request, "auctions/index.html", {
+        "listings": watchlist
     })
 
 
@@ -160,5 +159,13 @@ def categories(request):
 def category(request, name):
     category = Category.objects.get(name=name)
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all().filter(category=category)
+        "listings": Listing.objects.all().filter(category=category, is_closed=False)
+    })
+
+
+def won(request):
+    won_listings = Listing.objects.all().filter(winner = request.user)
+    return render(request, "auctions/index.html", {
+        "listings": won_listings,
+        "won_listings": True
     })
