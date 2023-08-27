@@ -140,7 +140,7 @@ def listing(request, id):
         "won_auction": bool(listing.winner == request.user),
         "comments": listing.comments.all(),
         "add_to_watchlist": bool(listing.user != request.user and not listing.is_closed),
-        "remove_from_watchlist": bool(request.user.is_authenticated and request.user != listing.user and listing in request.user.watch_list.listings.all())
+        "remove_from_watchlist": bool(request.user.is_authenticated and listing in request.user.watch_list.listings.all())
     })
 
 
@@ -148,4 +148,17 @@ def watch(request):
     watchlist = request.user.watch_list.listings.all()
     return render(request, "auctions/watch.html", {
         "watchlist": watchlist
+    })
+
+
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
+
+def category(request, name):
+    category = Category.objects.get(name=name)
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all().filter(category=category)
     })

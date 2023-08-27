@@ -9,9 +9,11 @@
       <img class="active__listingImage" src="{{ listing.imageUrl }}" alt="" />
     </div>
     <div class="active__listingRight">
-      <h3>{{ listing.title }}</h3>
-      <p>{{ listing.description }}</p>
-      <small>Current Price: ${{ listing.current_price }}</small>
+      <div class="active__listingRightTop">
+        <h3>{{ listing.title }}</h3>
+        <p>{{ listing.description }}</p>
+      </div>
+      <p>Current Price: ${{ listing.current_price }}</p>
     </div>
   </div>
   <a href="{% url 'listing' listing.id %}">View Listing</a>
