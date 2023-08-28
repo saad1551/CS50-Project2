@@ -62,6 +62,8 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
+        watchlist = WatchList(user = user)
+        watchlist.save()
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
