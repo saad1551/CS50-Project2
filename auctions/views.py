@@ -113,9 +113,12 @@ def listing(request, id):
 
         elif request.POST.get("close") and listing.user == request.user:
             listing.is_closed = True
-            highest_bid = max(listing_bids, key=lambda x: x.bid_amount)
-            listing.winner = highest_bid.user
-            listing.save()
+            if listing_bids:
+                highest_bid = max(listing_bids, key=lambda x: x.bid_amount)
+                listing.winner = highest_bid.user
+                listing.save()
+            else:
+                listing.delete()
             return HttpResponseRedirect(reverse("index"))
         
         elif request.POST.get("comment"):
@@ -135,11 +138,12 @@ def listing(request, id):
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "min_bid": max(listing_bids, key=lambda x: x.bid_amount).bid_amount+1 if bool(listing_bids) else listing.starting_bid,
-        "close_auction": bool(request.user == listing.user and bool(listing_bids)),
+        "close_auction": bool(request.user == listing.user),
         "won_auction": bool(listing.winner == request.user),
         "comments": listing.comments.all(),
-        "add_to_watchlist": bool(listing.user != request.user and not listing.is_closed),
-        "remove_from_watchlist": bool(request.user.is_authenticated and listing in request.user.watch_list.listings.all())
+        "add_to_watchlist": bool(not listing.is_closed),
+        "remove_from_watchlist": bool(request.user.is_authenticated and listing in request.user.watch_list.listings.all()),
+        "no_of_bids": len(listing_bids)
     })
 
 

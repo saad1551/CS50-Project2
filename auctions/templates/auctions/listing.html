@@ -20,20 +20,21 @@
                 <div class="listing__containerRightDetails">
                     <h2>{{ listing.title }}</h2>
                     <h4>{{ listing.description }}</h4>
+                    <h6>Category: <a href="{% url 'category' listing.category.name %}">{{listing.category.name|capfirst}}</a></h6>
                 </div>
                 <div class="listing__containerRightBidding">
                     {% if listing.is_closed %}
                     <p>Sold for: ${{ listing.current_price }}</p>
                     {% else %}
-                    <p>Current Price: ${{ listing.current_price }}</p>
+                    <p>Current Price: ${{ listing.current_price }} ({{no_of_bids}} bids)</p>
                     {% endif %}
                     {% if remove_from_watchlist %} 
-                    <form action="{% url 'listing' listing.id %}" method="post">
+                    <form style="margin-bottom: 5px;" action="{% url 'listing' listing.id %}" method="post">
                         {% csrf_token %}
                         <input type="submit" name="remove_from_watchlist" value="Remove From Watchlist">
                     </form>
                     {% elif add_to_watchlist and user.is_authenticated %}
-                    <form action="{% url 'listing' listing.id %}" method="post">
+                    <form style="margin-bottom: 5px;" action="{% url 'listing' listing.id %}" method="post">
                         {% csrf_token %}
                         <input type="submit" name="add_to_watchlist" value="Add To Watchlist">
                     </form>
