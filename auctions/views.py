@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib import messages
 
 from .models import User, Listing, Category, Bid, Comment, WatchList
-from .forms import ListingForm, CommentForm
+from .forms import ListingForm
 
 
 def index(request):
