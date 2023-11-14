@@ -59,6 +59,12 @@
                     {% elif won_auction %}
                     <div class="winning__message">
                         <h4>You have won this listing</h4>
+                        <h5>Send a message to the creator of the listing: </h5>
+                        <form action="{% url 'listing' listing.id %}" method="post">
+                            {% csrf_token %}
+                            <textarea name="message" placeholder="Your Message Here..." rows="5" cols="40"></textarea>
+                            <input type="submit" value="Send Message">
+                        </form>
                     </div>
                     {% endif %}
                 </div>

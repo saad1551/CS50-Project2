@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 
-from .models import User, Listing, Category, Bid, Comment, WatchList
+from .models import User, Listing, Category, Bid, Comment, WatchList, Message
 from .forms import ListingForm
 
 
@@ -134,6 +134,10 @@ def listing(request, id):
         elif request.POST.get("remove_from_watchlist"):
             watchlist = WatchList.objects.get(user=request.user)
             watchlist.listings.remove(listing)
+
+        elif request.POST.get("message"):
+            message = Message(sender = request.user, receiver = listing.user, message = request.POST["message"])
+            message.save()
 
         return HttpResponseRedirect(reverse("listing", kwargs={'id': listing.id}))
 
