@@ -55,5 +55,5 @@ class Message(models.Model):
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
     message = models.TextField()
-    listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="messages")
+    listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="messages", null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

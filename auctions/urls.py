@@ -12,5 +12,6 @@ urlpatterns = [
     path("watchlist", views.watch, name="watch"),
     path("categories", views.categories, name="categories"),
     path("categories/<str:name>", views.category, name="category"),
-    path("won", views.won, name="won")
+    path("won", views.won, name="won"),
+    path("chats", views.chats, name="chats")
 ]

@@ -179,3 +179,15 @@ def won(request):
         "listings": won_listings,
         "won_listings": True
     })
+
+def chats(request):
+    messages = Message.objects.all().filter(receiver = request.user)
+    senders = messages.values('sender').distinct().order_by('timestamp')
+    chats = []
+    for sender in senders:
+        chats.append({
+            "sender": sender,
+            "first_message": messages.filter(sender = sender)
+        })
+    
+

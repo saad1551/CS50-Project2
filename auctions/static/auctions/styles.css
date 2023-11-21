@@ -63,3 +63,14 @@ body {
     max-height: 70%;
     max-width: 100px;
 }
+
+.chatsContainer {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    display: flex;
+    justify-content: space-between;
+}
